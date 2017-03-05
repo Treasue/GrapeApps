@@ -17,6 +17,7 @@ public class appsServer extends DBHelper{
 	//private db serviceServer;
 	public appsServer(){
 		super("localDB","services","id");
+		protectfield(new String[]{"appid"});
 		//serviceServer = getDB();
 	}
 	@SuppressWarnings("unchecked")
