@@ -33,4 +33,8 @@ public class appsServer extends DBHelper{
 	private String getAppid(){
 		return md5.getMD5(UUID.randomUUID().toString());
 	}
+	public boolean update(String id, String appJson) {
+		return super.protectfield(new String[] { "appid" }).update(id, JSONHelper.string2json(
+				appJson));
+	}
 }
