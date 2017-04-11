@@ -1,40 +1,39 @@
-/**
- * 
- */
-/**
- * @author Administrator
- *
- */
 package interfaceApplication;
 
-import java.util.UUID;
 import org.json.simple.JSONObject;
 
-import common.DBHelper;
-import common.JSONHelper;
-import security.md5;
-public class appsServer extends DBHelper{
-	//private db serviceServer;
-	public appsServer(){
-		super("localDB","services","id");
-		protectfield(new String[]{"appid"});
-		//serviceServer = getDB();
+import esayhelper.JSONHelper;
+import model.AppModel;
+@SuppressWarnings("unchecked")
+public class appsServer {
+	private AppModel model = new AppModel();
+	private JSONObject _obj = new JSONObject();
+	public String appInsert(String appInfo) {
+		return model.resultMessage(model.insert(JSONHelper.string2json(appInfo)), "新增apps成功");
 	}
-	@SuppressWarnings("unchecked")
-	@Override
-	public String insert(String appJSON){
-		JSONObject JSONObject = JSONHelper.string2json(appJSON);
-		JSONObject.put("appid",getAppid());
-		if( JSONObject.containsKey("id")){
-			JSONObject.remove("id");
-		}
-		return super.insert(JSONObject);
+	public String appUpdate(String appid,String appInfo) {
+		return model.resultMessage(model.update(appid, JSONHelper.string2json(appInfo)), "修改apps成功");
 	}
-	private String getAppid(){
-		return md5.getMD5(UUID.randomUUID().toString());
+	public String appDelete(String appid) {
+		return model.resultMessage(model.delete(appid), "删除apps成功");
 	}
-	public boolean update(String id, String appJson) {
-		return super.protectfield(new String[] { "appid" }).update(id, JSONHelper.string2json(
-				appJson));
+	public String appDeleteBatch(String ids) {
+		return model.resultMessage(model.delete(ids.split(",")), "批量删除apps成功");
+	}
+	public String appSearch(String appInfo) {
+		_obj.put("record", model.search(JSONHelper.string2json(appInfo)));
+		return model.resultMessage(0, _obj.toString());
+	}
+	
+	public String appPage(int idx,int pageSize) {
+		_obj.put("record", model.page(idx, pageSize).toString());
+		return model.resultMessage(0, _obj.toString());
+	}
+	public String appPageBy(int idx,int pageSize,String appInfo) {
+		_obj.put("record", model.page(idx, pageSize,JSONHelper.string2json(appInfo)).toString());
+		return model.resultMessage(0, _obj.toString());
+	}
+	public String appUpdateMeta(String appid,String ins) {
+		return model.resultMessage(model.setMeta(appid, ins), "设置实例成功");
 	}
 }
